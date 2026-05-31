@@ -23,7 +23,19 @@ export const AuthProvider = ({ children }) => {
     };
 
     loadUser();
-  }, []);
+
+    // Check for token expiration every minute
+    const checkTokenExpiration = setInterval(() => {
+      if (user) {
+        const token = authService.getToken();
+        if (!token) {
+          logout();
+        }
+      }
+    }, 60000);
+
+    return () => clearInterval(checkTokenExpiration);
+  }, [user]);
 
   const login = async (email, password) => {
     try {

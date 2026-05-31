@@ -65,4 +65,44 @@ class User extends Authenticatable
     {
         return $this->hasRole('student');
     }
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class, 'teacher_id');
+    }
+
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class, 'created_by');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function courseMaterials()
+    {
+        return $this->hasMany(CourseMaterial::class, 'uploaded_by');
+    }
+
+    public function roomReservations()
+    {
+        return $this->hasMany(RoomReservation::class);
+    }
+
+    public function processedRequests()
+    {
+        return $this->hasMany(AdministrativeRequest::class, 'processed_by');
+    }
+
+    public function generatedDocuments()
+    {
+        return $this->hasMany(GeneratedDocument::class, 'generated_by');
+    }
+
+    public function reviewedJustifications()
+    {
+        return $this->hasMany(AbsenceJustification::class, 'reviewed_by');
+    }
 }

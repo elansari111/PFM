@@ -13,14 +13,24 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (!$request->user() || !$request->user()->hasRole($role)) {
+        if (!$request->user()) {
             return response()->json([
-                'message' => 'Unauthorized. You do not have the required role.',
-            ], 403);
+                'message' => 'Unauthenticated. Please login to continue.',
+            ], 401);
         }
 
-        return $next($request);
+        foreach ($roles as $role) {
+            if ($request->user()->hasRole($role)) {
+                return $next($request);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Unauthorized. You do not have the required role.',
+            'required_roles' => $roles,
+            'user_role' => $request->user()->role?->slug,
+        ], 403);
     }
 }

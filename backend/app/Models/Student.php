@@ -26,4 +26,29 @@ class Student extends Model
     {
         return "{$this->first_name} {$this->last_name}";
     }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
+
+    public function absences()
+    {
+        return $this->hasMany(Absence::class);
+    }
+
+    public function absenceJustifications()
+    {
+        return $this->hasMany(AbsenceJustification::class);
+    }
+
+    public function administrativeRequests()
+    {
+        return $this->hasMany(AdministrativeRequest::class);
+    }
+
+    public function generatedDocuments()
+    {
+        return $this->hasMany(GeneratedDocument::class);
+    }
 }

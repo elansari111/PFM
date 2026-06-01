@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthContext';
+import Notifications from './Notifications';
 
 const Sidebar = ({ role }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,10 +26,13 @@ const Sidebar = ({ role }) => {
     ],
     student: [
       { path: '/student/dashboard', label: 'Dashboard', icon: '📊' },
-      { path: '/student/courses', label: 'Courses', icon: '📖' },
-      { path: '/student/grades', label: 'Grades', icon: '📝' },
-      { path: '/student/attendance', label: 'Attendance', icon: '📅' },
+      { path: '/student/grades', label: 'Grades', icon: '�' },
+      { path: '/student/absences', label: 'Absences', icon: '�' },
       { path: '/student/schedule', label: 'Schedule', icon: '🕐' },
+      { path: '/student/announcements', label: 'Announcements', icon: '�' },
+      { path: '/student/course-materials', label: 'Course Materials', icon: '📚' },
+      { path: '/student/administrative-requests', label: 'Requests', icon: '📋' },
+      { path: '/student/absence-justification', label: 'Justify Absence', icon: '✍️' },
     ],
   };
 
@@ -62,9 +66,12 @@ const Sidebar = ({ role }) => {
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-gray-900">University Management</h1>
-            <p className="text-sm text-gray-600 capitalize">{role} Portal</p>
+          <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">University Management</h1>
+              <p className="text-sm text-gray-600 capitalize">{role} Portal</p>
+            </div>
+            <Notifications />
           </div>
 
           {/* Navigation */}

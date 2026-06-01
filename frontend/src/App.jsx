@@ -11,6 +11,13 @@ import StudentLayout from './layouts/StudentLayout';
 import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import StudentDashboard from './pages/StudentDashboard';
+import Grades from './pages/student/Grades';
+import Absences from './pages/student/Absences';
+import Schedule from './pages/student/Schedule';
+import Announcements from './pages/student/Announcements';
+import CourseMaterials from './pages/student/CourseMaterials';
+import AdministrativeRequests from './pages/student/AdministrativeRequests';
+import AbsenceJustification from './pages/student/AbsenceJustification';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +78,13 @@ function App() {
                 }
               >
                 <Route path="dashboard" element={<StudentDashboard />} />
+                <Route path="grades" element={<Grades />} />
+                <Route path="absences" element={<Absences />} />
+                <Route path="schedule" element={<Schedule />} />
+                <Route path="announcements" element={<Announcements />} />
+                <Route path="course-materials" element={<CourseMaterials />} />
+                <Route path="administrative-requests" element={<AdministrativeRequests />} />
+                <Route path="absence-justification" element={<AbsenceJustification />} />
                 <Route path="*" element={<Navigate to="/student/dashboard" replace />} />
               </Route>
 

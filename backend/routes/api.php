@@ -51,20 +51,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard', function () {
             return response()->json(['message' => 'Student dashboard']);
         });
-        Route::get('/modules', function () {
-            return response()->json(['message' => 'Student modules']);
-        });
-        Route::get('/grades', function () {
-            return response()->json(['message' => 'Student grades']);
-        });
-        Route::get('/absences', function () {
-            return response()->json(['message' => 'Student absences']);
-        });
+        
+        // Student-specific endpoints
+        Route::get('/grades', [\App\Http\Controllers\Api\StudentController::class, 'grades']);
+        Route::get('/absences', [\App\Http\Controllers\Api\StudentController::class, 'absences']);
+        Route::get('/schedule', [\App\Http\Controllers\Api\StudentController::class, 'schedule']);
+        Route::get('/announcements', [\App\Http\Controllers\Api\StudentController::class, 'announcements']);
+        Route::get('/course-materials', [\App\Http\Controllers\Api\StudentController::class, 'courseMaterials']);
+        Route::get('/administrative-requests', [\App\Http\Controllers\Api\StudentController::class, 'administrativeRequests']);
+        Route::get('/generated-documents', [\App\Http\Controllers\Api\StudentController::class, 'generatedDocuments']);
+        Route::get('/notifications', [\App\Http\Controllers\Api\StudentController::class, 'notifications']);
+        
+        // Submit requests
         Route::post('/absence-justifications', [\App\Http\Controllers\Api\AbsenceJustificationController::class, 'store']);
         Route::post('/administrative-requests', [\App\Http\Controllers\Api\AdministrativeRequestController::class, 'store']);
-        Route::get('/generated-documents', function () {
-            return response()->json(['message' => 'Student documents']);
-        });
     });
     
     // Common routes (accessible by multiple roles)

@@ -23,14 +23,16 @@ export const AuthProvider = ({ children }) => {
     };
 
     loadUser();
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
 
     // Check for token expiration every minute
     const checkTokenExpiration = setInterval(() => {
-      if (user) {
-        const token = authService.getToken();
-        if (!token) {
-          logout();
-        }
+      const token = authService.getToken();
+      if (!token) {
+        logout();
       }
     }, 60000);
 

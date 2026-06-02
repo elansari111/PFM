@@ -7,6 +7,65 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## PFM - Plateforme de Formation Management
+
+University management system with role-based access control for Admins, Teachers, and Students.
+
+### Features
+
+- User management with role-based access (Admin, Teacher, Student)
+- Module and classroom management
+- Schedule management with conflict detection
+- Grade management (CC1, CC2, Exam, Final)
+- Attendance tracking
+- Absence justification system
+- Administrative request handling
+- PDF document generation (transcripts, certificates, attestations)
+- Room reservations
+- Announcements and course materials
+
+### Setup Instructions
+
+1. **Install dependencies:**
+   ```bash
+   composer install
+   npm install
+   ```
+
+2. **Environment configuration:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+3. **Database setup:**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+4. **Storage link (required for PDF generation):**
+   ```bash
+   php artisan storage:link
+   ```
+
+5. **Start development server:**
+   ```bash
+   php artisan serve
+   npm run dev
+   ```
+
+### API Endpoints
+
+- **Public:** `POST /api/auth/login`
+- **Admin:** `/api/admin/*` (requires admin role)
+- **Teacher:** `/api/teacher/*` (requires teacher role)
+- **Student:** `/api/student/*` (requires student role)
+
+### Grade Calculation Formula
+
+Final Grade = ((CC1 + CC2) / 2) × 0.4 + Exam × 0.6
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

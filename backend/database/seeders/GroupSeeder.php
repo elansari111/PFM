@@ -30,7 +30,10 @@ class GroupSeeder extends Seeder
         ];
 
         foreach ($groups as $group) {
-            \App\Models\Group::create($group);
+            \App\Models\Group::firstOrCreate(
+                ['code' => $group['code']],
+                $group
+            );
         }
     }
 }

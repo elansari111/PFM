@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignId('module_id')->constrained('modules')->onDelete('cascade');
-            $table->enum('grade_type', ['exam', 'assignment', 'quiz', 'project', 'participation']);
+            $table->enum('grade_type', ['cc1', 'cc2', 'exam', 'final']);
             $table->decimal('score', 5, 2); // e.g., 15.50 out of 20
             $table->decimal('max_score', 5, 2)->default(20);
             $table->date('date');

@@ -19,7 +19,7 @@ class AnnouncementFactory extends Factory
     {
         return [
             'title' => fake()->sentence(),
-            'content' => fake()->paragraphs(3),
+            'content' => fake()->paragraph(3),
             'target_role' => fake()->randomElement(['all', 'admin', 'teacher', 'student']),
             'created_by' => \App\Models\User::factory(),
             'published_at' => fake()->dateTime(),

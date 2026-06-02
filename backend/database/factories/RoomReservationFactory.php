@@ -25,7 +25,7 @@ class RoomReservationFactory extends Factory
             'start_datetime' => fake()->dateTimeBetween('+1 week', '+2 weeks'),
             'end_datetime' => fake()->dateTimeBetween('+2 weeks', '+2 weeks +2 hours'),
             'status' => fake()->randomElement(['pending', 'approved', 'rejected', 'cancelled']),
-            'approved_by' => fake()->optional()->\App\Models\User::factory(),
+            'approved_by' => fake()->boolean(50) ? \App\Models\User::factory() : null,
             'approved_at' => fake()->optional()->dateTime(),
             'rejection_reason' => fake()->optional()->sentence(),
         ];

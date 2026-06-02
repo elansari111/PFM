@@ -41,7 +41,10 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            \App\Models\User::create($user);
+            \App\Models\User::firstOrCreate(
+                ['email' => $user['email']],
+                $user
+            );
         }
     }
 }

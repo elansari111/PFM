@@ -22,7 +22,6 @@ return new class extends Migration
             $table->softDeletes();
             
             $table->index(['user_id']);
-            $table->index(['commentable_type', 'commentable_id']);
             $table->index(['parent_id']);
             $table->index(['status']);
         });

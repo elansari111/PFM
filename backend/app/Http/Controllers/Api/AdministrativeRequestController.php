@@ -84,4 +84,70 @@ class AdministrativeRequestController extends Controller
     {
         return response()->json(['message' => 'Cannot delete submitted requests'], 403);
     }
+
+    /**
+     * Admin: Get all administrative requests
+     */
+    public function adminIndex(Request $request)
+    {
+        $query = \App\Models\AdministrativeRequest::with(['student.user', 'teacher.user', 'generatedDocuments']);
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $requests = $query->orderBy('created_at', 'desc')
+            ->paginate($request->per_page ?? 20);
+
+        return response()->json(['requests' => $requests]);
+    }
+
+    /**
+     * Admin: Validate administrative request
+     */
+    public function validate(Request $request, string $id)
+    {
+        $adminRequest = \App\Models\AdministrativeRequest::findOrFail($id);
+
+        $data = $request->validate([
+            'status' => 'required|in:approved,rejected,in_progress,completed',
+            'reviewer_notes' => 'nullable|string|max:500',
+        ]);
+
+        $adminRequest->update([
+            'status' => $data['status'],
+            'reviewer_notes' => $data['reviewer_notes'] ?? null,
+            'reviewed_at' => now(),
+        ]);
+
+        // Generate document if approved and type is transcript/certificate
+        if ($data['status'] === 'approved' && in_array($adminRequest->type, ['transcript', 'certificate', 'attestation'])) {
+            try {
+                $pdfService = new \App\Services\PdfService();
+                $documentPath = $pdfService->generateDocument($adminRequest);
+                
+                // Create generated document record
+                \App\Models\GeneratedDocument::create([
+                    'administrative_request_id' => $adminRequest->id,
+                    'file_path' => $documentPath,
+                    'generated_at' => now(),
+                ]);
+
+                $adminRequest->update(['status' => 'completed']);
+            } catch (\Exception $e) {
+                // Log error but don't fail the request
+                \Log::error('PDF generation failed: ' . $e->getMessage());
+                $adminRequest->update(['status' => 'in_progress']);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Request validated successfully',
+            'request' => $adminRequest->load('student.user', 'teacher.user', 'generatedDocuments')
+        ]);
+    }
 }

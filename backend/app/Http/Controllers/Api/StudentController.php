@@ -72,7 +72,7 @@ class StudentController extends Controller
         }
 
         $modules = $student->group->modules()
-            ->with(['schedules.classroom', 'teacher'])
+            ->with(['schedules.classroom', 'teacher.user'])
             ->get();
 
         $schedule = $modules->map(function ($module) {
@@ -104,9 +104,11 @@ class StudentController extends Controller
             return response()->json(['message' => 'Student profile not found'], 404);
         }
 
-        $announcements = \App\Models\Announcement::where('target_role', 'all')
-            ->orWhere('target_role', 'student')
-            ->orWhere('target_role', $student->group->name)
+        $announcements = \App\Models\Announcement::where(function($query) use ($student) {
+                $query->where('target_role', 'all')
+                    ->orWhere('target_role', 'student')
+                    ->orWhere('target_role', $student->group->name);
+            })
             ->with(['creator', 'comments'])
             ->orderBy('published_at', 'desc')
             ->where('status', 'published')

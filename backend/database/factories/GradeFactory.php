@@ -20,7 +20,7 @@ class GradeFactory extends Factory
         return [
             'student_id' => \App\Models\Student::factory(),
             'module_id' => \App\Models\Module::factory(),
-            'grade_type' => fake()->randomElement(['exam', 'assignment', 'quiz', 'project', 'participation']),
+            'grade_type' => fake()->randomElement(['cc1', 'cc2', 'exam', 'final']),
             'score' => fake()->randomFloat(1, 0, 20),
             'max_score' => 20,
             'date' => fake()->date(),

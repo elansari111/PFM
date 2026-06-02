@@ -28,6 +28,8 @@ class AbsenceJustificationController extends Controller
         return response()->json(['justifications' => $justifications]);
     }
 
+    use \App\Traits\UploadsSecureProcessing;
+
     /**
      * Store a newly created resource in storage.
      */
@@ -41,9 +43,9 @@ class AbsenceJustificationController extends Controller
 
         $data = $request->validated();
 
-        // Handle file upload
+        // Handle file upload securely
         if ($request->hasFile('document')) {
-            $documentPath = $request->file('document')->store('absence_justifications', 'public');
+            $documentPath = $this->storeSecurely($request->file('document'), 'absence_justifications');
             $data['document_path'] = $documentPath;
         }
 
@@ -92,5 +94,52 @@ class AbsenceJustificationController extends Controller
     public function destroy(string $id)
     {
         return response()->json(['message' => 'Cannot delete submitted justifications'], 403);
+    }
+
+    /**
+     * Admin: Get all justifications for validation
+     */
+    public function adminIndex(Request $request)
+    {
+        $query = \App\Models\AbsenceJustification::with(['student.user', 'reviewer', 'absences.module']);
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $justifications = $query->orderBy('created_at', 'desc')
+            ->paginate($request->per_page ?? 20);
+
+        return response()->json(['justifications' => $justifications]);
+    }
+
+    /**
+     * Admin: Validate absence justification
+     */
+    public function validate(Request $request, string $id)
+    {
+        $justification = \App\Models\AbsenceJustification::findOrFail($id);
+
+        $data = $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'reviewer_notes' => 'nullable|string|max:500',
+        ]);
+
+        $justification->update([
+            'status' => $data['status'],
+            'reviewer_notes' => $data['reviewer_notes'] ?? null,
+            'reviewer_id' => Auth::id(),
+            'reviewed_at' => now(),
+        ]);
+
+        // Update related absences if approved
+        if ($data['status'] === 'approved') {
+            $justification->absences()->update(['status' => 'excused']);
+        }
+
+        return response()->json([
+            'message' => 'Justification validated successfully',
+            'justification' => $justification->load('student.user', 'reviewer')
+        ]);
     }
 }

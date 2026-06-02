@@ -24,7 +24,7 @@ class AdministrativeRequestFactory extends Factory
             'description' => fake()->paragraph(),
             'status' => fake()->randomElement(['pending', 'in_progress', 'approved', 'rejected', 'completed']),
             'submitted_at' => fake()->dateTime(),
-            'processed_by' => fake()->optional()->\App\Models\User::factory(),
+            'processed_by' => fake()->boolean(50) ? \App\Models\User::factory() : null,
             'processed_at' => fake()->optional()->dateTime(),
             'admin_notes' => fake()->optional()->sentence(),
         ];

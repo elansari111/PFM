@@ -18,7 +18,7 @@ class GeneratedDocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'request_id' => fake()->optional()->\App\Models\AdministrativeRequest::factory(),
+            'request_id' => fake()->boolean(50) ? \App\Models\AdministrativeRequest::factory() : null,
             'student_id' => \App\Models\Student::factory(),
             'type' => fake()->randomElement(['transcript', 'certificate', 'attestation', 'grade_report', 'other']),
             'title' => fake()->sentence(),

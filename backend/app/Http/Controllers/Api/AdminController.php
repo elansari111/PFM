@@ -21,7 +21,7 @@ class AdminController extends Controller
             ],
             'modules' => [
                 'total' => \App\Models\Module::count(),
-                'active' => \App\Models\Module::where('is_active', true)->count(),
+                'active' => \App\Models\Module::where('status', 'active')->count(),
             ],
             'groups' => [
                 'total' => \App\Models\Group::count(),

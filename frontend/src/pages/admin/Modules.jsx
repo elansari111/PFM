@@ -143,7 +143,7 @@ const Modules = () => {
                 >
                   <option value="">Select a teacher...</option>
                   {teachers?.map((teacher) => (
-                    <option key={teacher.id} value={teacher.teacher?.id}>{teacher.name}</option>
+                    <option key={teacher.id} value={teacher.id}>{teacher.name}</option>
                   ))}
                 </select>
                 {errors.teacher_id && <p className="mt-1 text-sm text-red-600">{errors.teacher_id}</p>}
@@ -192,7 +192,7 @@ const Modules = () => {
                 <tr key={module.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{module.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{module.group?.name || '-'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{module.teacher?.user?.name || '-'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{module.teacher?.name || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${module.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                       {module.is_active ? 'Active' : 'Inactive'}

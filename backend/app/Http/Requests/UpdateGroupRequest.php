@@ -25,6 +25,7 @@ class UpdateGroupRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string|min:3|max:255',
+            'code' => 'nullable|string|min:2|max:50|unique:groups,code,' . $this->route('group'),
             'description' => 'nullable|string|max:1000',
         ];
     }
@@ -37,6 +38,7 @@ class UpdateGroupRequest extends FormRequest
         return [
             'name.min' => 'Name must be at least 3 characters',
             'name.max' => 'Name must not exceed 255 characters',
+            'code.unique' => 'This group code already exists',
             'description.max' => 'Description must not exceed 1000 characters',
         ];
     }

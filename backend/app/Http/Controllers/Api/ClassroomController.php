@@ -16,7 +16,7 @@ class ClassroomController extends Controller
     {
         $query = \App\Models\Classroom::with(['schedules.module', 'roomReservations']);
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
@@ -45,7 +45,7 @@ class ClassroomController extends Controller
      */
     public function show(string $id)
     {
-        $classroom = \App\Models\Classroom::with(['schedules.module.teacher.user', 'roomReservations.teacher.user'])
+        $classroom = \App\Models\Classroom::with(['schedules.module.teacher', 'roomReservations.user'])
             ->findOrFail($id);
         return response()->json(['classroom' => $classroom]);
     }

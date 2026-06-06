@@ -72,7 +72,7 @@ class StudentController extends Controller
         }
 
         $modules = $student->group->modules()
-            ->with(['schedules.classroom', 'teacher.user'])
+            ->with(['schedules.classroom', 'teacher'])
             ->get();
 
         $schedule = $modules->map(function ($module) {
@@ -80,7 +80,7 @@ class StudentController extends Controller
                 return [
                     'id' => $schedule->id,
                     'module_name' => $module->name,
-                    'teacher_name' => $module->teacher->user->name,
+                    'teacher_name' => $module->teacher->name,
                     'classroom' => $schedule->classroom->name,
                     'day_of_week' => $schedule->day_of_week,
                     'start_time' => $schedule->start_time,

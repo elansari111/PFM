@@ -103,7 +103,7 @@ class AbsenceJustificationController extends Controller
     {
         $query = \App\Models\AbsenceJustification::with(['student.user', 'reviewer', 'absences.module']);
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 

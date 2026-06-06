@@ -94,7 +94,7 @@ const AdminScheduleCalendar = () => {
       borderColor: getModuleColor(schedule.module.name),
       extendedProps: {
         classroom: schedule.classroom.name,
-        teacher: schedule.module.teacher?.user?.name || 'Unassigned',
+        teacher: schedule.module.teacher?.name || 'Unassigned',
         group: schedule.module.group?.name || 'No Group',
         type: schedule.type,
         module: schedule.module.name,

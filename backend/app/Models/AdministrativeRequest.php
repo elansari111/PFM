@@ -12,6 +12,7 @@ class AdministrativeRequest extends Model
 
     protected $fillable = [
         'student_id',
+        'teacher_id',
         'type',
         'title',
         'description',
@@ -30,6 +31,11 @@ class AdministrativeRequest extends Model
     public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
     }
 
     public function processor()

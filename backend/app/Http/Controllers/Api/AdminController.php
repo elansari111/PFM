@@ -57,18 +57,17 @@ class AdminController extends Controller
      */
     public function roomReservations(Request $request)
     {
-        $query = \App\Models\RoomReservation::with(['classroom', 'module.teacher.user', 'teacher.user']);
+        $query = \App\Models\RoomReservation::with(['classroom', 'user']);
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('date')) {
-            $query->where('date', $request->date);
+        if ($request->filled('date')) {
+            $query->whereDate('start_datetime', $request->date);
         }
 
-        $reservations = $query->orderBy('date', 'desc')
-            ->orderBy('start_time')
+        $reservations = $query->orderBy('start_datetime', 'desc')
             ->paginate($request->per_page ?? 20);
 
         return response()->json(['reservations' => $reservations]);
@@ -87,13 +86,13 @@ class AdminController extends Controller
 
         $reservation->update([
             'status' => 'approved',
-            'reviewer_id' => auth()->id(),
-            'reviewed_at' => now(),
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
         ]);
 
         return response()->json([
             'message' => 'Room reservation approved successfully',
-            'reservation' => $reservation->load('classroom', 'module.teacher.user')
+            'reservation' => $reservation->load('classroom', 'user')
         ]);
     }
 
@@ -115,13 +114,13 @@ class AdminController extends Controller
         $reservation->update([
             'status' => 'rejected',
             'rejection_reason' => $data['rejection_reason'],
-            'reviewer_id' => auth()->id(),
-            'reviewed_at' => now(),
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
         ]);
 
         return response()->json([
             'message' => 'Room reservation rejected successfully',
-            'reservation' => $reservation->load('classroom', 'module.teacher.user')
+            'reservation' => $reservation->load('classroom', 'user')
         ]);
     }
 }

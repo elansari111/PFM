@@ -104,7 +104,7 @@ class ScheduleConflictService
             ->when($excludeId, function($query) use ($excludeId) {
                 return $query->where('id', '!=', $excludeId);
             })
-            ->with(['module.teacher.user', 'classroom'])
+            ->with(['module.teacher', 'classroom'])
             ->first();
     }
 
@@ -132,7 +132,7 @@ class ScheduleConflictService
             ->when($excludeId, function($query) use ($excludeId) {
                 return $query->where('id', '!=', $excludeId);
             })
-            ->with(['module.teacher.user', 'classroom'])
+            ->with(['module.teacher', 'classroom'])
             ->first();
     }
 
@@ -160,7 +160,7 @@ class ScheduleConflictService
             ->when($excludeId, function($query) use ($excludeId) {
                 return $query->where('id', '!=', $excludeId);
             })
-            ->with(['module.teacher.user', 'classroom'])
+            ->with(['module.teacher', 'classroom'])
             ->first();
     }
 
@@ -170,7 +170,7 @@ class ScheduleConflictService
     public function getDayConflicts($dayOfWeek)
     {
         $schedules = Schedule::where('day_of_week', $dayOfWeek)
-            ->with(['module.teacher.user', 'module.group', 'classroom'])
+            ->with(['module.teacher', 'module.group', 'classroom'])
             ->orderBy('start_time')
             ->get();
 

@@ -14,17 +14,17 @@ class ScheduleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = \App\Models\Schedule::with(['module.teacher.user', 'classroom']);
+        $query = \App\Models\Schedule::with(['module.teacher', 'classroom']);
 
-        if ($request->has('module_id')) {
+        if ($request->filled('module_id')) {
             $query->where('module_id', $request->module_id);
         }
 
-        if ($request->has('classroom_id')) {
+        if ($request->filled('classroom_id')) {
             $query->where('classroom_id', $request->classroom_id);
         }
 
-        if ($request->has('day_of_week')) {
+        if ($request->filled('day_of_week')) {
             $query->where('day_of_week', $request->day_of_week);
         }
 
@@ -63,7 +63,7 @@ class ScheduleController extends Controller
 
         return response()->json([
             'message' => 'Schedule created successfully',
-            'schedule' => $schedule->load('module.teacher.user', 'classroom')
+            'schedule' => $schedule->load('module.teacher', 'classroom')
         ], 201);
     }
 
@@ -72,7 +72,7 @@ class ScheduleController extends Controller
      */
     public function show(string $id)
     {
-        $schedule = \App\Models\Schedule::with(['module.teacher.user', 'module.group', 'classroom'])
+        $schedule = \App\Models\Schedule::with(['module.teacher', 'module.group', 'classroom'])
             ->findOrFail($id);
         return response()->json(['schedule' => $schedule]);
     }
@@ -121,7 +121,7 @@ class ScheduleController extends Controller
      */
     public function calendarEvents(Request $request)
     {
-        $query = \App\Models\Schedule::with(['module.teacher.user', 'module.group', 'classroom']);
+        $query = \App\Models\Schedule::with(['module.teacher', 'module.group', 'classroom']);
 
         // Filter by user role
         $user = auth()->user();
@@ -159,7 +159,7 @@ class ScheduleController extends Controller
                             'module_id' => $schedule->module_id,
                             'module_name' => $schedule->module->name,
                             'module_code' => $schedule->module->code,
-                            'teacher_name' => $schedule->module->teacher ? $schedule->module->teacher->user->name : 'N/A',
+                            'teacher_name' => $schedule->module->teacher ? $schedule->module->teacher->name : 'N/A',
                             'classroom_name' => $schedule->classroom->name,
                             'classroom_building' => $schedule->classroom->building,
                             'type' => $schedule->type,
@@ -222,7 +222,7 @@ class ScheduleController extends Controller
 
         return response()->json([
             'message' => 'Schedule updated successfully',
-            'schedule' => $schedule->load('module.teacher.user', 'classroom')
+            'schedule' => $schedule->load('module.teacher', 'classroom')
         ]);
     }
 

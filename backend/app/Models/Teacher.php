@@ -29,4 +29,9 @@ class Teacher extends Model
     {
         return $this->hasMany(Module::class, 'teacher_id');
     }
+
+    public function administrativeRequests()
+    {
+        return $this->hasMany(AdministrativeRequest::class);
+    }
 }

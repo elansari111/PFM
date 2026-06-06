@@ -17,13 +17,13 @@ class UserController extends Controller
     {
         $query = \App\Models\User::with(['role', 'student', 'teacher']);
 
-        if ($request->has('role')) {
+        if ($request->filled('role')) {
             $query->whereHas('role', function($q) use ($request) {
                 $q->where('slug', $request->role);
             });
         }
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('email', 'like', '%' . $request->search . '%');
@@ -50,10 +50,26 @@ class UserController extends Controller
         if ($data['role_id']) {
             $role = \App\Models\Role::find($data['role_id']);
             if ($role) {
+                $nameParts = explode(' ', $data['name'], 2);
+                $firstName = $nameParts[0];
+                $lastName = count($nameParts) > 1 ? $nameParts[1] : '';
+
                 if ($role->slug === 'student') {
-                    $user->student()->create(['group_id' => $data['group_id'] ?? null]);
+                    $user->student()->create([
+                        'group_id' => $data['group_id'] ?? null,
+                        'student_number' => 'STU-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                        'first_name' => $firstName,
+                        'last_name' => $lastName,
+                        'enrollment_date' => now(),
+                    ]);
                 } elseif ($role->slug === 'teacher') {
-                    $user->teacher()->create();
+                    $user->teacher()->create([
+                        'employee_number' => 'T-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                        'first_name' => $firstName,
+                        'last_name' => $lastName,
+                        'specialization' => 'General',
+                        'hire_date' => now(),
+                    ]);
                 }
             }
         }
@@ -88,13 +104,41 @@ class UserController extends Controller
         $user->update($data);
 
         // Update role-specific profile
-        if (isset($data['role_id'])) {
-            $role = \App\Models\Role::find($data['role_id']);
-            if ($role && $role->slug === 'student' && isset($data['group_id'])) {
-                if (!$user->student) {
-                    $user->student()->create(['group_id' => $data['group_id']]);
-                } else {
-                    $user->student->update(['group_id' => $data['group_id']]);
+        if (isset($data['role_id']) || isset($data['name'])) {
+            $nameParts = explode(' ', $user->name, 2);
+            $firstName = $nameParts[0];
+            $lastName = count($nameParts) > 1 ? $nameParts[1] : '';
+
+            $role = \App\Models\Role::find($user->role_id);
+            if ($role) {
+                if ($role->slug === 'student') {
+                    if (!$user->student) {
+                        $user->student()->create([
+                            'group_id' => $data['group_id'] ?? null,
+                            'student_number' => 'STU-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                            'first_name' => $firstName,
+                            'last_name' => $lastName,
+                            'enrollment_date' => now(),
+                        ]);
+                    } else {
+                        $updateData = ['first_name' => $firstName, 'last_name' => $lastName];
+                        if (array_key_exists('group_id', $data)) {
+                            $updateData['group_id'] = $data['group_id'];
+                        }
+                        $user->student->update($updateData);
+                    }
+                } elseif ($role->slug === 'teacher') {
+                    if (!$user->teacher) {
+                        $user->teacher()->create([
+                            'employee_number' => 'T-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                            'first_name' => $firstName,
+                            'last_name' => $lastName,
+                            'specialization' => 'General',
+                            'hire_date' => now(),
+                        ]);
+                    } else {
+                        $user->teacher->update(['first_name' => $firstName, 'last_name' => $lastName]);
+                    }
                 }
             }
         }

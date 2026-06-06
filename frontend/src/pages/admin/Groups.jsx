@@ -6,6 +6,7 @@ const Groups = () => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
+    code: '',
     description: '',
   });
   const [errors, setErrors] = useState({});
@@ -22,7 +23,7 @@ const Groups = () => {
     mutationFn: (data) => api.post('/admin/groups', data).then(res => res.data),
     onSuccess: () => {
       setSuccess(true);
-      setFormData({ name: '', description: '' });
+      setFormData({ name: '', code: '', description: '' });
       setShowForm(false);
       queryClient.invalidateQueries(['admin-groups']);
       setTimeout(() => setSuccess(false), 3000);
@@ -107,6 +108,18 @@ const Groups = () => {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Code *</label>
+              <input
+                type="text"
+                value={formData.code}
+                onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+                required
+              />
+              {errors.code && <p className="mt-1 text-sm text-red-600">{errors.code}</p>}
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
               <textarea
                 value={formData.description}
@@ -137,6 +150,7 @@ const Groups = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Students</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -146,6 +160,7 @@ const Groups = () => {
               {groups?.map((group) => (
                 <tr key={group.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{group.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{group.code}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">{group.description || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{group.students?.length || 0}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

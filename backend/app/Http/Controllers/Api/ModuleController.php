@@ -14,17 +14,17 @@ class ModuleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = \App\Models\Module::with(['group', 'teacher.user', 'schedules']);
+        $query = \App\Models\Module::with(['group', 'teacher', 'schedules']);
 
-        if ($request->has('group_id')) {
+        if ($request->filled('group_id')) {
             $query->where('group_id', $request->group_id);
         }
 
-        if ($request->has('teacher_id')) {
+        if ($request->filled('teacher_id')) {
             $query->where('teacher_id', $request->teacher_id);
         }
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
@@ -44,7 +44,7 @@ class ModuleController extends Controller
 
         return response()->json([
             'message' => 'Module created successfully',
-            'module' => $module->load('group', 'teacher.user')
+            'module' => $module->load('group', 'teacher')
         ], 201);
     }
 
@@ -53,7 +53,7 @@ class ModuleController extends Controller
      */
     public function show(string $id)
     {
-        $module = \App\Models\Module::with(['group', 'teacher.user', 'schedules.classroom', 'grades.student.user'])
+        $module = \App\Models\Module::with(['group', 'teacher', 'schedules.classroom', 'grades.student.user'])
             ->findOrFail($id);
         return response()->json(['module' => $module]);
     }
@@ -68,7 +68,7 @@ class ModuleController extends Controller
 
         return response()->json([
             'message' => 'Module updated successfully',
-            'module' => $module->load('group', 'teacher.user')
+            'module' => $module->load('group', 'teacher')
         ]);
     }
 

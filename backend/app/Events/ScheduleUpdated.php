@@ -22,7 +22,7 @@ class ScheduleUpdated implements ShouldBroadcast
      */
     public function __construct($schedule, $action = 'updated')
     {
-        $this->schedule = $schedule->load(['module.teacher.user', 'module.group', 'classroom']);
+        $this->schedule = $schedule->load(['module.teacher', 'module.group', 'classroom']);
         $this->action = $action;
     }
 

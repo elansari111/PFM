@@ -92,11 +92,11 @@ class AdministrativeRequestController extends Controller
     {
         $query = \App\Models\AdministrativeRequest::with(['student.user', 'teacher.user', 'generatedDocuments']);
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('type')) {
+        if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
@@ -132,8 +132,13 @@ class AdministrativeRequestController extends Controller
                 
                 // Create generated document record
                 \App\Models\GeneratedDocument::create([
-                    'administrative_request_id' => $adminRequest->id,
+                    'request_id' => $adminRequest->id,
+                    'student_id' => $adminRequest->student_id,
                     'file_path' => $documentPath,
+                    'file_type' => 'pdf',
+                    'generated_by' => Auth::id(),
+                    'type' => $adminRequest->type,
+                    'title' => 'Generated ' . ucfirst($adminRequest->type),
                     'generated_at' => now(),
                 ]);
 

@@ -26,6 +26,8 @@ class RoleController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
+        $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+
         $role = \App\Models\Role::create($data);
 
         return response()->json([
@@ -54,6 +56,8 @@ class RoleController extends Controller
             'name' => 'required|string|max:255|unique:roles,name,' . $id,
             'description' => 'nullable|string|max:500',
         ]);
+
+        $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
 
         $role->update($data);
 

@@ -14,9 +14,9 @@ class GroupController extends Controller
      */
     public function index(Request $request)
     {
-        $query = \App\Models\Group::with(['students.user', 'modules.teacher.user']);
+        $query = \App\Models\Group::with(['students.user', 'modules.teacher']);
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
@@ -45,7 +45,7 @@ class GroupController extends Controller
      */
     public function show(string $id)
     {
-        $group = \App\Models\Group::with(['students.user', 'modules.teacher.user', 'modules.schedules'])
+        $group = \App\Models\Group::with(['students.user', 'modules.teacher', 'modules.schedules'])
             ->findOrFail($id);
         return response()->json(['group' => $group]);
     }
